@@ -24,18 +24,10 @@ void        sim_step        (struct Simulation *simp);
 void        sim_reset       (struct Simulation *simp);
 void        sim_quit        (struct Simulation *simp);
 
-enum
-ERR_CODES 
-{
-        ERR_INVALID_INPUT,
-};
-
 void
 sim_init(struct Simulation *simp)
 {
     memcpy(simp, &default_sim, sizeof default_sim);
-
-    double *values[10] = {};
 }
 
 void
@@ -49,28 +41,22 @@ sim_view(struct Simulation *simp)
     return 0;
 }
 
-// currently just boiletplate from the lunar descent program
 int
 sim_enter(struct Simulation *simp, char const *prompt)
 {
-    char buffer[MAX];
-    size_t buflen = 0;
-    int ch;
-
-    fputs(prompt, stdout);
-
-    while ((ch = getchar()) != EOF && ch != '\n')
-        if (buflen < 32)
-            buffer[++buflen] = ch;
-
-    if (ch == EOF)
-        putchar('\n');
+    double buffer[MAX] = {};
+    const char *delim = ',';
 
     return 0;
 }
 
 void
 sim_compute(struct Simulation *simp)
+{
+}
+
+void
+sim_sanitize(struct Simulation *simp)
 {
 }
 
