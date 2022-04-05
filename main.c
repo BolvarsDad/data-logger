@@ -2,19 +2,19 @@
 #include <string.h>
 #include <stdint.h>
 
-#define COUNTER_MAX 10
-#define EXIT_VALUE 0
+#define MAX 10
+#define EXIT_VAL 0
 
 struct
 Simulation
 {
     int   *arguments;
     int    argc;
-    int    argv;
-}   simdata;
+};
 
 // Default values
-static struct Simulation const default_sim = {0, 0};
+static struct Simulation const default_sim = {NULL, 0};
+struct Simulation simdata;
 
 void        sim_init        (struct Simulation *simp);
 int         sim_view        (struct Simulation *simp);
@@ -28,14 +28,14 @@ enum
 ERR_CODES 
 {
         ERR_INVALID_INPUT,
-        ERR_COUNTER_MAX_REACHED,
-        ERR_MAX_VALUE
 };
 
 void
 sim_init(struct Simulation *simp)
 {
     memcpy(simp, &default_sim, sizeof default_sim);
+
+    double *values[10] = {};
 }
 
 void
@@ -53,7 +53,7 @@ sim_view(struct Simulation *simp)
 int
 sim_enter(struct Simulation *simp, char const *prompt)
 {
-    char buffer[COUNTER_MAX];
+    char buffer[MAX];
     size_t buflen = 0;
     int ch;
 
@@ -69,7 +69,6 @@ sim_enter(struct Simulation *simp, char const *prompt)
     return 0;
 }
 
-
 void
 sim_compute(struct Simulation *simp)
 {
@@ -83,6 +82,13 @@ sim_reset(struct Simulation *simp)
 void
 sim_quit(struct Simulation *simp)
 {
+
+}
+
+void
+usage()
+{
+    printf("Usag");
 }
 
 int
