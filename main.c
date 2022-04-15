@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #define MAX 10
 #define EXIT_VAL 0
 
+#define MIN(a, b) \
+    ( (a) < (b) ? (a) : (b) )
+
 struct
 Simulation
 {
-    int   *arguments;
     int    argc;
+    int    arguments[];
 };
 
 // Default values
@@ -62,12 +64,6 @@ sim_compute(struct Simulation *simp)
     int compute_median;
     int compute_min;
     int compute_max;
-}
-
-void
-sim_sanitize(struct Simulation *simp)
-{
-
 }
 
 // using memset is the fastest way I could think of to reset the array heap using the standard library
