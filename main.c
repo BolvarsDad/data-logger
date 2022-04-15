@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MAX 10
 #define EXIT_VAL 0
@@ -38,8 +39,19 @@ sim_view(struct Simulation *simp)
 int
 sim_enter(struct Simulation *simp, char const *prompt)
 {
-    double buffer[MAX] = {};
-    const char *delim = ',';
+    char        buffer[MAX] = {};
+    size_t      buflen = 0;
+    char       *token;
+    int         ch;
+    size_t      num_of_elements = sizeof(buffer)/sizeof(buffer[0]);
+
+    token = strtok(buffer, ",");
+    
+    fputs(prompt, stdout);
+
+    while ((ch = getchar()) != EOF && ch != '\n')
+        if (buflen < MAX)
+            buffer[buflen++] = ch;
 
     return 0;
 }
@@ -52,23 +64,10 @@ sim_compute(struct Simulation *simp)
     int compute_max;
 }
 
-double
-float_read(char const *prompt)
-{
-    char buffer[MAX];
-    size_t buflen = 0;
-    int ch;
-
-    fputs(prompt, stdout);
-
-    while ((ch = getchar()) != EOF && ch != '\n')
-        if (buflen < MAX)
-            buffer[++buflen] = ch;
-}
-
 void
 sim_sanitize(struct Simulation *simp)
 {
+
 }
 
 // using memset is the fastest way I could think of to reset the array heap using the standard library
@@ -77,14 +76,17 @@ void
 sim_reset(struct Simulation *simp)
 {
     int *args = simp->arguments;
-    memset(args, 0, sizeof(args));
+    memset(args, 0, simp->argc*sizeof(args[0]));
 }
 
 char const *
-sim_get_quitreason(struct simulation const *simp)
+sim_get_quitreason(struct Simulation const *simp)
 {
     if (simp->argc > MAX)
         return "Max arguments reached.\n";
+
+    if (simp->arguments = 0)
+        return "Exit value entered.\n";
 
     if (feof(stdin))
         return "User quit.\n";
@@ -101,7 +103,7 @@ sim_quit(struct Simulation *simp)
 void
 usage()
 {
-    printf("Usag");
+    printf("Usage");
 }
 
 int
