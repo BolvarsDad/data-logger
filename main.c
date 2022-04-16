@@ -11,8 +11,8 @@
 struct
 Simulation
 {
+    int    arguments[MAX];
     int    argc;
-    int    arguments[];
 };
 
 // Default values
@@ -24,6 +24,7 @@ int         sim_view        (struct Simulation *simp);
 int         sim_enter       (struct Simulation *simp, char const *prompt);
 void        sim_compute     (struct Simulation *simp);
 void        sim_reset       (struct Simulation *simp);
+char const *get_quit_reason (struct Simulation const *simp);
 int         sim_quit        (struct Simulation *simp);
 
 void
@@ -35,6 +36,9 @@ sim_init(struct Simulation *simp)
 int
 sim_view(struct Simulation *simp)
 {
+    for (int i = 0; i < simp->argc; ++i)
+        printf("%d ", simp->arguments[i]);
+
     return 0;
 }
 
@@ -61,9 +65,7 @@ sim_enter(struct Simulation *simp, char const *prompt)
 void
 sim_compute(struct Simulation *simp)
 {
-    int compute_median;
-    int compute_min;
-    int compute_max;
+
 }
 
 // using memset is the fastest way I could think of to reset the array heap using the standard library
@@ -81,8 +83,9 @@ sim_get_quitreason(struct Simulation const *simp)
     if (simp->argc > MAX)
         return "Max arguments reached.\n";
 
-    if (simp->arguments = 0)
-        return "Exit value entered.\n";
+    for (int i = 0; i < MAX; ++i)
+        if (simp->arguments[i] == EXIT_VAL)
+            return "Exit value used\n";
 
     if (feof(stdin))
         return "User quit.\n";
