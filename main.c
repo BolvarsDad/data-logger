@@ -73,8 +73,7 @@ sim_compute(struct Simulation *simp)
 void
 sim_reset(struct Simulation *simp)
 {
-    int *args = simp->arguments;
-    memset(args, 0, simp->argc*sizeof(args[0]));
+    memset(simp->arguments, 0, simp->argc*sizeof(simp->arguments[0]));
 }
 
 char const *
