@@ -1,114 +1,93 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-#define MAX 10
-#define EXIT_VAL 0
-
-#define MIN(a, b) \
-    ( (a) < (b) ? (a) : (b) )
+#define USERINPUT_MAX 10
+#define USERINPUT_SENTINEL 0
 
 struct
-Simulation
+lohistat
 {
-    int    arguments[MAX];
-    int    argc;
+    int low;
+    int high;
 };
 
-// Default values
-static struct Simulation const default_sim = {NULL, 0};
-struct Simulation simdata;
-
-void        sim_init        (struct Simulation *simp);
-int         sim_view        (struct Simulation *simp);
-int         sim_enter       (struct Simulation *simp, char const *prompt);
-void        sim_compute     (struct Simulation *simp);
-void        sim_reset       (struct Simulation *simp);
-char const *get_quit_reason (struct Simulation const *simp);
-int         sim_quit        (struct Simulation *simp);
-
-void
-sim_init(struct Simulation *simp)
+uint64_t
+strtou64(char const *buffer, size_t bufsz)
 {
-    memcpy(simp, &default_sim, sizeof default_sim);
+    uint64_t out;
+
+    for (size_t i = 0; i < bufsz && isdigit(buffer[i]); ++i)
+        out = 10 * out + (buffer[i] - '0');
+
+    return out;
 }
 
 int
-sim_view(struct Simulation *simp)
+take_user_input(char const *prompt)
 {
-    for (int i = 0; i < simp->argc; ++i)
-        printf("%d ", simp->arguments[i]);
-
-    return 0;
-}
-
-int
-sim_enter(struct Simulation *simp, char const *prompt)
-{
-    char        buffer[MAX] = {};
-    size_t      buflen = 0;
-    char       *token;
-    int         ch;
-    size_t      num_of_elements = sizeof(buffer)/sizeof(buffer[0]);
-
-    token = strtok(buffer, ",");
-    
-    fputs(prompt, stdout);
+    char buffer[USERINPUT_MAX];
+    size_t buflen;
+    char ch;
 
     while ((ch = getchar()) != EOF && ch != '\n')
-        if (buflen < MAX)
+        if (buflen < USERINPUT_MAX)
             buffer[buflen++] = ch;
 
-    return 0;
+    if (ch == EOF)
+        putchar('\n');
+
+    return strtou64(buffer, buflen); 
 }
 
-void
-sim_compute(struct Simulation *simp)
+struct lohistat
+get_lohi(int *array, size_t arrayLen)
 {
+    struct lohistat stat = {0, 0};
 
+    for (int i = 0; i < arrayLen; ++i)
+    {
+        for (int i = 0; i < arrayLen; ++i)
+            if (array[i] < array[stat.low])
+                stat.low = i;
+
+            else if (array[i] > array[stat.high])
+                stat.high = i;
+    }
+
+    return stat;
 }
 
-// using memset is the fastest way I could think of to reset the array heap using the standard library
-// memset->string.h
-void
-sim_reset(struct Simulation *simp)
+double
+compute_average(int v[USERINPUT_MAX])
 {
-    memset(simp->arguments, 0, simp->argc*sizeof(simp->arguments[0]));
+    int sum;
+
+    for (int i = 0; i < USERINPUT_COUNT && VALUES[i] != USERINPUT_SENTINEL; ++i)
+        sum = sum + i;
+
+    return sum / USERINPUT_COUNT;
 }
 
-char const *
-sim_get_quitreason(struct Simulation const *simp)
+// In this assignment normalization means each element in the original user-inputted array
+// minus the mean average
+int *compute_normalization(int v[USERINPUT_COUNT], float avg)
 {
-    if (simp->argc > MAX)
-        return "Max arguments reached.\n";
+    int normalized[USERINPUT_COUNT + 1];
 
-    for (int i = 0; i < MAX; ++i)
-        if (simp->arguments[i] == EXIT_VAL)
-            return "Exit value used\n";
+    for (int i = 0; i < USERINPUT_COUNT && v[i] != USERINPUT_SENTINEL; ++i)
+        normalized[i] = v[i - avg];
 
-    if (feof(stdin))
-        return "User quit.\n";
-
-    return "Unkonwn error.\n";
-}
-
-int
-sim_quit(struct Simulation *simp)
-{
-    return 0;
-}
-
-void
-usage()
-{
-    printf("Usage");
+    return normalized; 
 }
 
 int
 main(int argc, char **argv)
 {
-    struct Simulation sim;
-    sim_init(&sim);
+    static char const *promptstr = "VECRQ? ";
+    int USERINPUTS[USERINPUT_MAX + 1];
+
 
     return 0;
 }
